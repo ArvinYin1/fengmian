@@ -1,0 +1,1292 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>封面工坊 — Cover Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link href="https://unpkg.com/@chinese-fonts/dyh@latest/dist/SmileySans-Oblique/result.css" rel="stylesheet">
+<link href="https://unpkg.com/@chinese-fonts/ysbth@latest/dist/%E4%BC%98%E8%AE%BE%E6%A0%87%E9%A2%98%E9%BB%91/result.css" rel="stylesheet">
+<link href="https://unpkg.com/@chinese-fonts/dymh@latest/dist/DouyinSansBold/result.css" rel="stylesheet">
+<link href="https://unpkg.com/@chinese-fonts/hlxsjt@latest/dist/%E9%B8%BF%E9%9B%B7%E8%A1%8C%E4%B9%A6%E7%AE%80%E4%BD%93/result.css" rel="stylesheet">
+<link href="https://unpkg.com/@chinese-fonts/cezkzdbs@latest/dist/%E4%BB%93%E8%80%B3%E5%91%A8%E7%8F%82%E6%AD%A3%E5%A4%A7%E6%A6%9C%E4%B9%A6/result.css" rel="stylesheet">
+<link href="https://unpkg.com/@chinese-fonts/kksjt@latest/dist/kuaikanshijieti20231213/result.css" rel="stylesheet">
+<link href="https://unpkg.com/@chinese-fonts/mksjh@latest/dist/MaokenAssortedSans/result.css" rel="stylesheet">
+
+<style>
+:root {
+  --bg: #0a0a0a;
+  --surface: #141414;
+  --surface-2: #1c1c1c;
+  --border: rgba(255,255,255,0.08);
+  --border-strong: rgba(255,255,255,0.18);
+  --text: #e8e6e0;
+  --muted: #807d75;
+  --accent: #ffcb05;
+  --accent-soft: #ffdb4d;
+  --accent-glow: rgba(255, 203, 5, 0.35);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  height: 100vh;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(255, 203, 5, 0.05), transparent 60%),
+    radial-gradient(ellipse 60% 40% at 100% 100%, rgba(255, 203, 5, 0.025), transparent 60%);
+}
+
+/* ============ Header ============ */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 36px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(10, 10, 10, 0.7);
+  backdrop-filter: blur(20px);
+  position: relative;
+  z-index: 10;
+}
+
+header::after {
+  content: '';
+  position: absolute;
+  left: 36px;
+  right: 36px;
+  bottom: -1px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  opacity: 0.3;
+}
+
+.brand {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+}
+
+.brand h1 {
+  font-family: 'Instrument Serif', serif;
+  font-size: 30px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 1;
+}
+
+.brand h1 em {
+  font-style: italic;
+  color: var(--accent);
+  margin-left: 4px;
+}
+
+.brand .badge {
+  font-size: 9px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  border: 1px solid var(--border-strong);
+  padding: 4px 8px;
+}
+
+.meta {
+  font-size: 10px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+}
+
+.meta em {
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+  color: var(--text);
+  font-size: 14px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.meta .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  display: inline-block;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; box-shadow: 0 0 12px var(--accent); }
+}
+
+/* ============ Layout ============ */
+main {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  height: calc(100vh - 71px);
+}
+
+aside.controls {
+  border-right: 1px solid var(--border);
+  padding: 28px 30px 30px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  background: linear-gradient(180deg, transparent, rgba(255,255,255,0.01));
+}
+
+aside.controls::-webkit-scrollbar { width: 4px; }
+aside.controls::-webkit-scrollbar-track { background: transparent; }
+aside.controls::-webkit-scrollbar-thumb { background: var(--border-strong); }
+
+/* ============ Field ============ */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.field-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--muted);
+}
+
+.field-label .lead {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  color: var(--text);
+}
+
+.field-label .num {
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+  font-size: 15px;
+  color: var(--accent);
+  letter-spacing: 0;
+  text-transform: none;
+  line-height: 1;
+}
+
+.field-label .val {
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+  font-size: 14px;
+  color: var(--accent);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+input[type="text"], textarea {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13px;
+  padding: 11px 13px;
+  outline: none;
+  transition: border-color 0.15s, background 0.15s;
+  resize: none;
+  width: 100%;
+}
+
+input[type="text"]:focus, textarea:focus {
+  border-color: var(--accent);
+  background: var(--surface-2);
+}
+
+textarea {
+  min-height: 70px;
+  font-family: 'Noto Sans SC', 'JetBrains Mono', sans-serif;
+}
+
+input[type="text"]::placeholder, textarea::placeholder {
+  color: var(--muted);
+}
+
+/* ============ File input ============ */
+.file-input {
+  position: relative;
+  display: block;
+  border: 1px dashed var(--border-strong);
+  background: var(--surface);
+  padding: 20px 14px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.file-input:hover, .file-input.drag-over {
+  border-color: var(--accent);
+  background: var(--surface-2);
+}
+
+.file-input input { display: none; }
+
+.file-input .text {
+  font-size: 12px;
+  color: var(--text);
+}
+
+.file-input .hint {
+  font-size: 9px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  margin-top: 5px;
+}
+
+.file-input .preview-thumb {
+  display: none;
+  width: 100%;
+  height: 64px;
+  background-size: cover;
+  background-position: center;
+  background-color: #000;
+  margin-bottom: 10px;
+}
+
+.file-input.has-image .preview-thumb {
+  display: block;
+}
+
+/* ============ Slider ============ */
+input[type="range"] {
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 2px;
+  background: var(--border-strong);
+  outline: none;
+  margin: 8px 0 4px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.35);
+  box-shadow: 0 0 0 6px var(--accent-glow);
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  border: 0;
+}
+
+/* ============ Color ============ */
+.color-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+input[type="color"] {
+  width: 36px;
+  height: 32px;
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  cursor: pointer;
+  padding: 2px;
+}
+input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+input[type="color"]::-webkit-color-swatch { border: none; }
+
+.color-value {
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+}
+
+.color-presets {
+  display: flex;
+  gap: 6px;
+  margin-left: auto;
+}
+
+.color-preset {
+  width: 18px;
+  height: 18px;
+  border: 1px solid var(--border-strong);
+  cursor: pointer;
+  transition: transform 0.15s, border-color 0.15s;
+}
+
+.color-preset:hover {
+  transform: scale(1.15);
+  border-color: var(--text);
+}
+
+/* ============ Ratio toggle ============ */
+.ratio-toggle {
+  display: flex;
+  gap: 1px;
+  background: var(--border);
+  padding: 1px;
+  border: 1px solid var(--border);
+}
+
+.ratio-toggle button {
+  flex: 1;
+  background: var(--surface);
+  border: none;
+  color: var(--muted);
+  font-family: inherit;
+  font-size: 11px;
+  padding: 11px;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.05em;
+}
+
+.ratio-toggle button.active {
+  background: var(--accent);
+  color: #000;
+  font-weight: 500;
+}
+
+.ratio-toggle button:hover:not(.active) {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+/* ============ Font chips ============ */
+.font-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.font-cat {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: var(--muted);
+  margin-top: 4px;
+  padding-left: 2px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.font-cat::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.font-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.font-chip {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 10px 12px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.18s;
+  text-align: left;
+  line-height: 1.15;
+  position: relative;
+  overflow: hidden;
+  min-height: 38px;
+}
+
+.font-chip:hover {
+  border-color: var(--border-strong);
+  background: var(--surface-2);
+}
+
+.font-chip.active {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--surface-2);
+}
+
+.font-chip.active::after {
+  content: '✓';
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  font-size: 10px;
+  color: var(--accent);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* ============ Toggle ============ */
+.toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.toggle-row label {
+  font-size: 12px;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.toggle {
+  width: 36px;
+  height: 20px;
+  background: var(--border-strong);
+  position: relative;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.toggle::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  background: var(--text);
+  transition: transform 0.2s;
+}
+
+.toggle.on {
+  background: var(--accent);
+}
+
+.toggle.on::after {
+  transform: translateX(16px);
+  background: #000;
+}
+
+/* ============ Download ============ */
+.download-btn {
+  background: var(--accent);
+  color: #0a0a0a;
+  border: none;
+  padding: 15px 18px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 4px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.download-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.6s;
+}
+
+.download-btn:hover::before {
+  transform: translateX(100%);
+}
+
+.download-btn:hover {
+  background: var(--accent-soft);
+}
+
+.download-btn:active {
+  transform: translateY(1px);
+}
+
+.download-btn .arrow {
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+  font-weight: normal;
+  font-size: 18px;
+  letter-spacing: 0;
+  line-height: 1;
+}
+
+/* ============ Section divider ============ */
+.divider {
+  position: relative;
+  height: 1px;
+  background: var(--border);
+  margin: 4px 0 8px;
+}
+
+.divider-label {
+  font-size: 9px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  background: var(--bg);
+  padding-right: 10px;
+  position: relative;
+  display: inline-block;
+  top: -6px;
+}
+
+.divider-label em {
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+  font-size: 12px;
+  color: var(--accent);
+  margin-right: 4px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* ============ Preview ============ */
+section.preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 56px 60px 70px;
+  position: relative;
+  overflow: hidden;
+}
+
+.preview::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+  background-size: 32px 32px;
+  pointer-events: none;
+}
+
+.preview-frame {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+#cover-canvas {
+  max-width: 100%;
+  max-height: 100%;
+  background: #000;
+  box-shadow:
+    0 0 0 1px var(--border-strong),
+    0 30px 90px rgba(0, 0, 0, 0.7),
+    0 0 120px rgba(255, 203, 5, 0.04);
+  transition: opacity 0.15s, max-height 0.3s, max-width 0.3s;
+}
+
+/* ============ Preview overlay info ============ */
+.preview-meta {
+  position: absolute;
+  top: 24px;
+  left: 36px;
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  z-index: 2;
+}
+
+.preview-meta .label {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: var(--muted);
+}
+
+.preview-meta .dimensions {
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+  font-size: 18px;
+  color: var(--text);
+  line-height: 1;
+}
+
+.preview-meta .dimensions sup {
+  font-size: 10px;
+  color: var(--muted);
+  font-style: normal;
+  margin-left: 4px;
+  letter-spacing: 0.1em;
+  vertical-align: super;
+}
+
+.preview-corner {
+  position: absolute;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: var(--muted);
+  z-index: 2;
+}
+
+.preview-corner.tr { top: 24px; right: 36px; }
+.preview-corner.bl { bottom: 24px; left: 36px; }
+.preview-corner.br {
+  bottom: 24px;
+  right: 36px;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.preview-corner em {
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+  font-size: 13px;
+  color: var(--text);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* ============ Animation ============ */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+aside.controls > * {
+  animation: fadeUp 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+}
+aside.controls > *:nth-child(1) { animation-delay: 0.08s; }
+aside.controls > *:nth-child(2) { animation-delay: 0.13s; }
+aside.controls > *:nth-child(3) { animation-delay: 0.18s; }
+aside.controls > *:nth-child(4) { animation-delay: 0.23s; }
+aside.controls > *:nth-child(5) { animation-delay: 0.28s; }
+aside.controls > *:nth-child(6) { animation-delay: 0.33s; }
+aside.controls > *:nth-child(7) { animation-delay: 0.38s; }
+aside.controls > *:nth-child(8) { animation-delay: 0.43s; }
+aside.controls > *:nth-child(9) { animation-delay: 0.48s; }
+aside.controls > *:nth-child(10) { animation-delay: 0.53s; }
+aside.controls > *:nth-child(11) { animation-delay: 0.58s; }
+
+.preview > * {
+  animation: fadeUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) 0.2s backwards;
+}
+
+@keyframes flash {
+  0% { opacity: 0; }
+  50% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.flash-msg {
+  position: fixed;
+  bottom: 36px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--accent);
+  color: #000;
+  padding: 10px 20px;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  pointer-events: none;
+  z-index: 100;
+  animation: flash 1.6s ease-out;
+}
+
+/* ============ Small screens ============ */
+@media (max-width: 900px) {
+  main { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; }
+  aside.controls { border-right: 0; border-top: 1px solid var(--border); order: 2; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <h1>封面工坊 <em>Studio</em></h1>
+    <span class="badge">v.001 / 2026</span>
+  </div>
+  <div class="meta">
+    <span class="dot"></span>
+    <em>Live render</em> · canvas → png
+  </div>
+</header>
+
+<main>
+
+  <aside class="controls">
+
+    <div class="field">
+      <div class="field-label">
+        <span class="lead"><span class="num">i</span> 背景图片</span>
+        <span>Background</span>
+      </div>
+      <label class="file-input" id="file-drop">
+        <div class="preview-thumb" id="thumb"></div>
+        <div class="text" id="file-text">点击或拖拽图片到此处</div>
+        <div class="hint">PNG · JPG · WebP</div>
+        <input type="file" id="bg-input" accept="image/*">
+      </label>
+    </div>
+
+    <div class="field">
+      <div class="field-label">
+        <span class="lead"><span class="num">ii</span> 副标题</span>
+        <span>Subtitle · 白色小字</span>
+      </div>
+      <input type="text" id="subtitle-input" value="AI音色克隆" placeholder="副标题文字">
+    </div>
+
+    <div class="field">
+      <div class="field-label">
+        <span class="lead"><span class="num">iii</span> 主标题</span>
+        <span>Title · 回车换行</span>
+      </div>
+      <textarea id="title-input" rows="2" placeholder="主标题（按回车换行）">免费
+在线体验</textarea>
+    </div>
+
+    <div class="field">
+      <div class="field-label">
+        <span class="lead"><span class="num">iv</span> 主标题字体</span>
+        <span>Display font</span>
+      </div>
+      <div class="font-stack">
+        <div class="font-cat">几何 · Geometric</div>
+        <div class="font-grid">
+          <button class="font-chip active" data-font="smiley" style="font-family:'Smiley Sans Oblique', sans-serif">得意黑</button>
+        </div>
+
+        <div class="font-cat">标题黑 · Display</div>
+        <div class="font-grid">
+          <button class="font-chip" data-font="ysbth" style="font-family:'YouSheBiaoTiHei', sans-serif">优设标题黑</button>
+          <button class="font-chip" data-font="dymh" style="font-family:'Douyin Sans', sans-serif">抖音美好体</button>
+          <button class="font-chip" data-font="kksjt" style="font-family:'快看世界体', sans-serif">快看世界体</button>
+          <button class="font-chip" data-font="mksjh" style="font-family:'MaokenAssortedSans', sans-serif">猫啃什锦黑</button>
+        </div>
+
+        <div class="font-cat">书法 · Calligraphy</div>
+        <div class="font-grid">
+          <button class="font-chip" data-font="hlxsjt" style="font-family:'hongleixingshu', serif">鸿雷行书</button>
+          <button class="font-chip" data-font="cezkzdbs" style="font-family:'TsangerZhoukeZhengdabangshu', serif">仓耳榜书</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="field-label">
+        <span class="lead"><span class="num">v</span> 主标题颜色</span>
+        <span>Title color</span>
+      </div>
+      <div class="color-row">
+        <input type="color" id="title-color" value="#ffcb05">
+        <span class="color-value" id="title-color-val">#FFCB05</span>
+        <div class="color-presets">
+          <div class="color-preset" data-color="#ffcb05" style="background:#ffcb05" title="经典金黄"></div>
+          <div class="color-preset" data-color="#ff5e3a" style="background:#ff5e3a" title="活力橙红"></div>
+          <div class="color-preset" data-color="#ffffff" style="background:#ffffff" title="纯白"></div>
+          <div class="color-preset" data-color="#00d68f" style="background:#00d68f" title="薄荷绿"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"><span class="divider-label"><em>§</em>遮罩 · MASK</span></div>
+
+    <div class="field">
+      <div class="field-label">
+        <span class="lead"><span class="num">vi</span> 浓度</span>
+        <span class="val" id="mask-opacity-val">0.85</span>
+      </div>
+      <input type="range" id="mask-opacity" min="0" max="1" step="0.01" value="0.85">
+    </div>
+
+    <div class="field">
+      <div class="field-label">
+        <span class="lead"><span class="num">vii</span> 渐变范围</span>
+        <span class="val" id="mask-extent-val">70%</span>
+      </div>
+      <input type="range" id="mask-extent" min="0.3" max="1" step="0.01" value="0.7">
+    </div>
+
+    <div class="divider"><span class="divider-label"><em>§</em>分隔线 · RULE</span></div>
+
+    <div class="field">
+      <div class="field-label">
+        <span class="lead"><span class="num">viii</span> 长度</span>
+        <span class="val" id="rule-length-val">240%</span>
+      </div>
+      <input type="range" id="rule-length" min="0" max="5" step="0.1" value="2.4">
+    </div>
+
+    <div class="field">
+      <div class="field-label">
+        <span class="lead"><span class="num">ix</span> 位置</span>
+        <span class="val" id="rule-position-val">35%</span>
+      </div>
+      <input type="range" id="rule-position" min="0" max="1" step="0.01" value="0.35">
+    </div>
+
+    <div class="divider"><span class="divider-label"><em>§</em>输出 · OUTPUT</span></div>
+
+    <div class="field">
+      <div class="field-label">
+        <span class="lead"><span class="num">x</span> 比例</span>
+        <span>Aspect ratio</span>
+      </div>
+      <div class="ratio-toggle">
+        <button data-ratio="4:3">4 : 3</button>
+        <button data-ratio="16:9" class="active">16 : 9</button>
+      </div>
+    </div>
+
+    <button class="download-btn" id="download-btn">
+      <span>导出 PNG · Export</span>
+      <span class="arrow">↘</span>
+    </button>
+
+  </aside>
+
+  <section class="preview">
+    <div class="preview-meta">
+      <span class="label">Preview</span>
+      <span class="dimensions" id="dimensions">1600 × 900<sup>PX</sup></span>
+    </div>
+    <div class="preview-corner tr">No.001 / Cover</div>
+    <div class="preview-frame">
+      <canvas id="cover-canvas" width="1600" height="900"></canvas>
+    </div>
+    <div class="preview-corner bl">— 实时渲染 / Real-time</div>
+    <div class="preview-corner br"><em>canvas</em> 2d context</div>
+  </section>
+
+</main>
+
+<script>
+const TITLE_FONTS = {
+  // Geometric
+  'smiley':     { stack: '"Smiley Sans Oblique", "PingFang SC", sans-serif',                weight: 400, sizeMul: 1.05 },
+  // Display / bold
+  'ysbth':      { stack: '"YouSheBiaoTiHei", "PingFang SC", sans-serif',                    weight: 400, sizeMul: 1.00 },
+  'dymh':       { stack: '"Douyin Sans", "PingFang SC", sans-serif',                        weight: 700, sizeMul: 0.95 },
+  'kksjt':      { stack: '"快看世界体", "PingFang SC", sans-serif',                         weight: 400, sizeMul: 0.95 },
+  'mksjh':      { stack: '"MaokenAssortedSans", "PingFang SC", sans-serif',                 weight: 400, sizeMul: 1.00 },
+  // Calligraphy
+  'hlxsjt':     { stack: '"hongleixingshu", "Kaiti SC", serif',                             weight: 400, sizeMul: 1.05 },
+  'cezkzdbs':   { stack: '"TsangerZhoukeZhengdabangshu", "Kaiti SC", serif',                weight: 400, sizeMul: 1.00 },
+};
+
+const state = {
+  bgImage: null,
+  subtitle: 'AI音色克隆',
+  title: '免费\n在线体验',
+  titleColor: '#ffcb05',
+  titleFont: 'smiley',
+  maskOpacity: 0.85,
+  maskExtent: 0.7,
+  ruleLength: 2.4,
+  rulePosition: 0.35,
+  ratio: '16:9',
+  ratios: {
+    '4:3':  [1600, 1200],
+    '16:9': [1600, 900],
+  }
+};
+
+const canvas = document.getElementById('cover-canvas');
+const ctx = canvas.getContext('2d');
+
+function render() {
+  const [w, h] = state.ratios[state.ratio];
+  if (canvas.width !== w || canvas.height !== h) {
+    canvas.width = w;
+    canvas.height = h;
+  }
+
+  // ---- Background ----
+  if (state.bgImage) {
+    drawImageCover(ctx, state.bgImage, 0, 0, w, h);
+  } else {
+    drawPlaceholder(ctx, w, h);
+  }
+
+  // ---- Black gradient mask (left → transparent) ----
+  const mask = ctx.createLinearGradient(0, 0, w, 0);
+  mask.addColorStop(0, `rgba(0,0,0,${state.maskOpacity})`);
+  mask.addColorStop(state.maskExtent, 'rgba(0,0,0,0)');
+  ctx.fillStyle = mask;
+  ctx.fillRect(0, 0, w, h);
+
+  // ---- Text ----
+  const padX = Math.round(w * 0.06);
+  const subtitleSize = Math.round(h * 0.075);
+  const fontInfo = TITLE_FONTS[state.titleFont];
+  const titleSize = Math.round(h * 0.185 * fontInfo.sizeMul);
+  const titleLineH = titleSize * 1.04;
+  const gap = Math.round(h * 0.045);
+
+  const lines = state.title.split('\n').filter(s => s.length > 0);
+  const totalTitleH = lines.length * titleLineH - (titleLineH - titleSize);
+  const decoLineH = Math.max(2, Math.round(subtitleSize * 0.08));
+  const decoGap = Math.min(Math.round(gap * state.rulePosition), gap - decoLineH - 2);
+  const titleGap = Math.max(2, gap - decoGap - decoLineH);
+  const totalBlock = subtitleSize + decoGap + decoLineH + titleGap + totalTitleH;
+  let startY = Math.round((h - totalBlock) / 2);
+
+  // Subtitle — elegant italic serif with subtle glow
+  ctx.textBaseline = 'top';
+  ctx.fillStyle = '#ffffff';
+  ctx.font = `italic ${subtitleSize}px "Instrument Serif", "Noto Serif SC", "Songti SC", serif`;
+  ctx.shadowColor = 'rgba(0,0,0,0.55)';
+  ctx.shadowBlur = Math.round(subtitleSize * 0.28);
+  ctx.shadowOffsetX = 0;
+  ctx.shadowOffsetY = 2;
+  ctx.fillText(state.subtitle, padX, startY);
+  ctx.shadowColor = 'transparent';
+  ctx.shadowBlur = 0;
+  ctx.shadowOffsetY = 0;
+
+  // Decorative gold rule between subtitle and title
+  const lineY = startY + subtitleSize + decoGap;
+  const lineWidth = Math.round(subtitleSize * state.ruleLength);
+  ctx.fillStyle = state.titleColor;
+  ctx.globalAlpha = 0.9;
+  ctx.fillRect(padX, lineY, lineWidth, decoLineH);
+  ctx.globalAlpha = 1.0;
+
+  // Title - 3D extruded (supersampled for clean edges)
+  const titleY0 = lineY + decoLineH + titleGap;
+  lines.forEach((line, i) => {
+    draw3DText(ctx, line, padX, titleY0 + i * titleLineH, titleSize, state.titleColor, fontInfo);
+  });
+}
+
+function drawPlaceholder(ctx, w, h) {
+  // base
+  const g = ctx.createLinearGradient(0, 0, w, h);
+  g.addColorStop(0, '#1f1f1f');
+  g.addColorStop(0.5, '#262522');
+  g.addColorStop(1, '#1a1a1a');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, w, h);
+
+  // grid
+  ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+  ctx.lineWidth = 1;
+  const step = 80;
+  for (let x = 0; x <= w; x += step) {
+    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
+  }
+  for (let y = 0; y <= h; y += step) {
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+  }
+
+  // crosshair center
+  ctx.strokeStyle = 'rgba(255, 203, 5, 0.5)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(w/2 - 14, h/2); ctx.lineTo(w/2 + 14, h/2);
+  ctx.moveTo(w/2, h/2 - 14); ctx.lineTo(w/2, h/2 + 14);
+  ctx.stroke();
+
+  // hint
+  ctx.font = `italic 28px "Instrument Serif", serif`;
+  ctx.fillStyle = 'rgba(255,255,255,0.45)';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('Upload a background image to begin', w/2, h/2 + 40);
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'top';
+}
+
+function drawImageCover(ctx, img, x, y, w, h) {
+  const imgRatio = img.width / img.height;
+  const tgtRatio = w / h;
+  let sx = 0, sy = 0, sw = img.width, sh = img.height;
+  if (imgRatio > tgtRatio) {
+    sw = img.height * tgtRatio;
+    sx = (img.width - sw) / 2;
+  } else {
+    sh = img.width / tgtRatio;
+    sy = (img.height - sh) / 2;
+  }
+  ctx.drawImage(img, sx, sy, sw, sh, x, y, w, h);
+}
+
+function draw3DText(ctx, text, x, y, size, hex, fontInfo) {
+  const depth = Math.max(8, Math.round(size * 0.13));
+  const SCALE = 2; // supersample for clean, seam-free extrusion edges
+
+  const fontStr        = `${fontInfo.weight} ${size}px ${fontInfo.stack}`;
+  const fontStrScaled  = `${fontInfo.weight} ${size * SCALE}px ${fontInfo.stack}`;
+
+  ctx.font = fontStr;
+  const m = ctx.measureText(text);
+
+  // ---- 1) Render text shape ONCE at high resolution ----
+  const pad = 8;
+  const innerW = Math.ceil(m.width) + pad * 2;
+  const innerH = Math.ceil(size * 1.55) + pad * 2;
+
+  const textCanvas = document.createElement('canvas');
+  textCanvas.width  = innerW * SCALE;
+  textCanvas.height = innerH * SCALE;
+  const tc = textCanvas.getContext('2d');
+  tc.font = fontStrScaled;
+  tc.textBaseline = 'top';
+  tc.fillStyle = '#0a0a0a';
+  tc.fillText(text, pad * SCALE, pad * SCALE);
+
+  // ---- 2) Compose the extrusion in high-res offscreen ----
+  // Stamp the same bitmap at every integer offset (in high-res space) so the
+  // shadow body is fully solid. Working at 2x means the cumulative staircase
+  // edge is half-pixel-stepped; downscaling with bilinear filtering averages
+  // it into a smooth slant — no visible "block stitching".
+  const extW = (innerW + depth) * SCALE;
+  const extH = (innerH + depth) * SCALE;
+  const extCanvas = document.createElement('canvas');
+  extCanvas.width  = extW;
+  extCanvas.height = extH;
+  const ec = extCanvas.getContext('2d');
+  for (let i = depth; i >= 1; i--) {
+    ec.drawImage(textCanvas, i * SCALE, i * SCALE);
+  }
+
+  // ---- 3) Downscale and stamp the shadow onto the main canvas ----
+  ctx.drawImage(
+    extCanvas,
+    0, 0, extW, extH,
+    x - pad, y - pad, extW / SCALE, extH / SCALE
+  );
+
+  // ---- 4) Front face: gradient at native resolution (sharp) ----
+  ctx.font = fontStr;
+  const grad = ctx.createLinearGradient(x, y, x, y + size);
+  grad.addColorStop(0,    lighten(hex, 14));
+  grad.addColorStop(0.55, hex);
+  grad.addColorStop(1,    darken(hex, 10));
+  ctx.fillStyle = grad;
+  ctx.fillText(text, x, y);
+
+  // Subtle outline for crispness on busy backgrounds
+  ctx.lineWidth = Math.max(1, size * 0.006);
+  ctx.strokeStyle = darken(hex, 22);
+  ctx.lineJoin = 'round';
+  ctx.strokeText(text, x, y);
+}
+
+function hexToRgb(hex) {
+  hex = hex.replace('#', '');
+  if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+  return {
+    r: parseInt(hex.slice(0, 2), 16),
+    g: parseInt(hex.slice(2, 4), 16),
+    b: parseInt(hex.slice(4, 6), 16),
+  };
+}
+function clamp(n) { return Math.max(0, Math.min(255, Math.round(n))); }
+function lighten(hex, amt) {
+  const { r, g, b } = hexToRgb(hex);
+  const k = amt * 2.55;
+  return `rgb(${clamp(r + k)}, ${clamp(g + k)}, ${clamp(b + k)})`;
+}
+function darken(hex, amt) {
+  const { r, g, b } = hexToRgb(hex);
+  const k = amt * 2.55;
+  return `rgb(${clamp(r - k)}, ${clamp(g - k)}, ${clamp(b - k)})`;
+}
+
+// ============ Events ============
+const bgInput = document.getElementById('bg-input');
+const fileDrop = document.getElementById('file-drop');
+const fileText = document.getElementById('file-text');
+const thumb = document.getElementById('thumb');
+const subtitleInput = document.getElementById('subtitle-input');
+const titleInput = document.getElementById('title-input');
+const titleColorInput = document.getElementById('title-color');
+const titleColorVal = document.getElementById('title-color-val');
+const maskOpacityInput = document.getElementById('mask-opacity');
+const maskOpacityVal = document.getElementById('mask-opacity-val');
+const maskExtentInput = document.getElementById('mask-extent');
+const maskExtentVal = document.getElementById('mask-extent-val');
+const ruleLengthInput = document.getElementById('rule-length');
+const ruleLengthVal = document.getElementById('rule-length-val');
+const rulePositionInput = document.getElementById('rule-position');
+const rulePositionVal = document.getElementById('rule-position-val');
+const ratioButtons = document.querySelectorAll('.ratio-toggle button');
+const downloadBtn = document.getElementById('download-btn');
+const dimensionsEl = document.getElementById('dimensions');
+
+function loadImageFile(file) {
+  if (!file || !file.type.startsWith('image/')) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const img = new Image();
+    img.onload = () => {
+      state.bgImage = img;
+      thumb.style.backgroundImage = `url(${ev.target.result})`;
+      fileDrop.classList.add('has-image');
+      fileText.textContent = '已选择 · 点击更换';
+      render();
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+bgInput.addEventListener('change', e => loadImageFile(e.target.files[0]));
+
+subtitleInput.addEventListener('input', e => { state.subtitle = e.target.value; render(); });
+titleInput.addEventListener('input', e => { state.title = e.target.value; render(); });
+
+titleColorInput.addEventListener('input', e => {
+  state.titleColor = e.target.value;
+  titleColorVal.textContent = e.target.value.toUpperCase();
+  render();
+});
+
+document.querySelectorAll('.color-preset').forEach(p => {
+  p.addEventListener('click', () => {
+    const c = p.dataset.color;
+    titleColorInput.value = c;
+    state.titleColor = c;
+    titleColorVal.textContent = c.toUpperCase();
+    render();
+  });
+});
+
+document.querySelectorAll('.font-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    document.querySelectorAll('.font-chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    state.titleFont = chip.dataset.font;
+    render();
+  });
+});
+
+maskOpacityInput.addEventListener('input', e => {
+  state.maskOpacity = parseFloat(e.target.value);
+  maskOpacityVal.textContent = parseFloat(e.target.value).toFixed(2);
+  render();
+});
+
+maskExtentInput.addEventListener('input', e => {
+  state.maskExtent = parseFloat(e.target.value);
+  maskExtentVal.textContent = Math.round(parseFloat(e.target.value) * 100) + '%';
+  render();
+});
+
+ruleLengthInput.addEventListener('input', e => {
+  state.ruleLength = parseFloat(e.target.value);
+  ruleLengthVal.textContent = Math.round(parseFloat(e.target.value) * 100) + '%';
+  render();
+});
+
+rulePositionInput.addEventListener('input', e => {
+  state.rulePosition = parseFloat(e.target.value);
+  rulePositionVal.textContent = Math.round(parseFloat(e.target.value) * 100) + '%';
+  render();
+});
+
+ratioButtons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    ratioButtons.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    state.ratio = btn.dataset.ratio;
+    const [w, h] = state.ratios[state.ratio];
+    dimensionsEl.innerHTML = `${w} × ${h}<sup>PX</sup>`;
+    render();
+  });
+});
+
+downloadBtn.addEventListener('click', () => {
+  const link = document.createElement('a');
+  const ts = new Date().toISOString().slice(0, 16).replace(/[T:]/g, '-');
+  link.download = `cover-${state.ratio.replace(':', 'x')}-${ts}.png`;
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+  showFlash('已下载 · DOWNLOADED');
+});
+
+function showFlash(text) {
+  const el = document.createElement('div');
+  el.className = 'flash-msg';
+  el.textContent = text;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 1600);
+}
+
+// drag & drop
+['dragover', 'dragenter'].forEach(ev => {
+  fileDrop.addEventListener(ev, e => {
+    e.preventDefault();
+    fileDrop.classList.add('drag-over');
+  });
+});
+['dragleave', 'drop'].forEach(ev => {
+  fileDrop.addEventListener(ev, e => {
+    e.preventDefault();
+    fileDrop.classList.remove('drag-over');
+  });
+});
+fileDrop.addEventListener('drop', e => {
+  e.preventDefault();
+  fileDrop.classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  loadImageFile(file);
+});
+
+// global paste (paste an image from clipboard)
+window.addEventListener('paste', e => {
+  const items = (e.clipboardData || {}).items || [];
+  for (const it of items) {
+    if (it.type.startsWith('image/')) {
+      loadImageFile(it.getAsFile());
+      showFlash('已粘贴图片');
+      break;
+    }
+  }
+});
+
+// Wait for fonts to load before first render
+if (document.fonts && document.fonts.ready) {
+  document.fonts.ready.then(() => render());
+}
+// initial paint immediately (in fallback fonts), then re-paint when fonts load
+render();
+</script>
+</body>
+</html>
