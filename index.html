@@ -271,6 +271,49 @@ input[type="text"]::placeholder, textarea::placeholder {
   display: block;
 }
 
+/* ============ Video frame picker ============ */
+#video-frame-picker {
+  gap: 10px;
+}
+#video-preview {
+  width: 100%;
+  height: auto;
+  display: block;
+  background: #000;
+  border: 1px solid var(--border);
+}
+.frame-btn {
+  width: 100%;
+  background: var(--accent);
+  color: #0a0a0a;
+  border: none;
+  padding: 11px;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.frame-btn:hover {
+  background: var(--accent-soft);
+}
+
+.close-picker {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font-size: 18px;
+  cursor: pointer;
+  padding: 0 4px;
+  line-height: 1;
+  margin-left: auto;
+}
+.close-picker:hover {
+  color: var(--text);
+}
+
 /* ============ Slider ============ */
 input[type="range"] {
   width: 100%;
@@ -448,6 +491,57 @@ input[type="color"]::-webkit-color-swatch { border: none; }
   font-size: 10px;
   color: var(--accent);
   font-family: 'JetBrains Mono', monospace;
+}
+
+/* ============ Preset chips ============ */
+.preset-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.preset-chip {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 12px;
+  padding: 12px 6px;
+  cursor: pointer;
+  transition: all 0.18s;
+  text-align: center;
+  letter-spacing: 0.05em;
+}
+
+.preset-chip:hover {
+  border-color: var(--border-strong);
+  background: var(--surface-2);
+}
+
+.preset-chip.active {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--surface-2);
+}
+
+/* ============ Screenshot mode (#shot=1) ============ */
+body.shot-mode header,
+body.shot-mode aside.controls,
+body.shot-mode .preview-meta,
+body.shot-mode .preview-corner { display: none; }
+
+body.shot-mode main {
+  display: block;
+  height: 100vh;
+}
+
+body.shot-mode section.preview {
+  padding: 0;
+  height: 100vh;
+}
+
+body.shot-mode #cover-canvas {
+  box-shadow: none;
 }
 
 /* ============ Toggle ============ */
@@ -758,22 +852,58 @@ aside.controls > *:nth-child(11) { animation-delay: 0.58s; }
       <label class="file-input" id="file-drop">
         <div class="preview-thumb" id="thumb"></div>
         <div class="text" id="file-text">点击或拖拽图片到此处</div>
-        <div class="hint">PNG · JPG · WebP</div>
-        <input type="file" id="bg-input" accept="image/*">
+        <div class="hint">PNG · JPG · WebP · MP4</div>
+        <input type="file" id="bg-input" accept="image/*,video/*">
       </label>
     </div>
 
-    <div class="field">
+    <div class="field" id="video-frame-picker" style="display:none;">
       <div class="field-label">
-        <span class="lead"><span class="num">ii</span> 副标题</span>
-        <span>Subtitle · 白色小字</span>
+        <span class="lead"><span class="num">i′</span> 选择帧</span>
+        <span>Video frame</span>
+        <button class="close-picker" id="close-video-picker" title="关闭视频选帧">×</button>
       </div>
-      <input type="text" id="subtitle-input" value="AI音色克隆" placeholder="副标题文字">
+      <canvas id="video-preview" width="320" height="180"></canvas>
+      <input type="range" id="video-seek" min="0" max="100" step="0.1" value="0">
+      <button class="frame-btn" id="use-frame-btn">使用此帧 · Use frame</button>
     </div>
 
     <div class="field">
       <div class="field-label">
-        <span class="lead"><span class="num">iii</span> 主标题</span>
+        <span class="lead"><span class="num">ii</span> 预设模板</span>
+        <span>Presets · 一键应用</span>
+      </div>
+      <div class="preset-grid">
+        <button class="preset-chip" data-preset="magazine">杂志编辑</button>
+        <button class="preset-chip" data-preset="impact">大字冲击</button>
+        <button class="preset-chip" data-preset="minimal">极简文艺</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="field-label">
+        <span class="lead"><span class="num">iii</span> 副标题</span>
+        <span>Subtitle · 上方小字</span>
+      </div>
+      <input type="text" id="subtitle-input" value="AI音色克隆" placeholder="副标题文字（留空则不显示）">
+    </div>
+
+    <div class="field">
+      <div class="field-label">
+        <span class="lead"><span class="num">iv</span> 副标题样式</span>
+        <span>Kicker style</span>
+      </div>
+      <div class="ratio-toggle" id="substyle-toggle">
+        <button data-substyle="tag">标签</button>
+        <button data-substyle="bar" class="active">侧线</button>
+        <button data-substyle="line">横线</button>
+        <button data-substyle="plain">无</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="field-label">
+        <span class="lead"><span class="num">v</span> 主标题</span>
         <span>Title · 回车换行</span>
       </div>
       <textarea id="title-input" rows="2" placeholder="主标题（按回车换行）">免费
@@ -782,7 +912,7 @@ aside.controls > *:nth-child(11) { animation-delay: 0.58s; }
 
     <div class="field">
       <div class="field-label">
-        <span class="lead"><span class="num">iv</span> 主标题字体</span>
+        <span class="lead"><span class="num">vi</span> 主标题字体</span>
         <span>Display font</span>
       </div>
       <div class="font-stack">
@@ -809,7 +939,7 @@ aside.controls > *:nth-child(11) { animation-delay: 0.58s; }
 
     <div class="field">
       <div class="field-label">
-        <span class="lead"><span class="num">v</span> 主标题颜色</span>
+        <span class="lead"><span class="num">vii</span> 主标题颜色</span>
         <span>Title color</span>
       </div>
       <div class="color-row">
@@ -824,11 +954,55 @@ aside.controls > *:nth-child(11) { animation-delay: 0.58s; }
       </div>
     </div>
 
+    <div class="divider"><span class="divider-label"><em>§</em>排版 · LAYOUT</span></div>
+
+    <div class="field">
+      <div class="field-label">
+        <span class="lead"><span class="num">viii</span> 标题大小</span>
+        <span class="val" id="title-scale-val">100%</span>
+      </div>
+      <input type="range" id="title-scale" min="0.6" max="1.4" step="0.02" value="1">
+    </div>
+
+    <div class="field">
+      <div class="field-label">
+        <span class="lead"><span class="num">ix</span> 垂直位置</span>
+        <span>Position</span>
+      </div>
+      <div class="ratio-toggle" id="vpos-toggle">
+        <button data-vpos="top">顶部</button>
+        <button data-vpos="middle" class="active">居中</button>
+        <button data-vpos="bottom">底部</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="field-label">
+        <span class="lead"><span class="num">x</span> 对齐</span>
+        <span>Align</span>
+      </div>
+      <div class="ratio-toggle" id="align-toggle">
+        <button data-align="left" class="active">左对齐</button>
+        <button data-align="center">居中</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="field-label">
+        <span class="lead"><span class="num">xi</span> 文字效果</span>
+        <span>Effect</span>
+      </div>
+      <div class="ratio-toggle" id="effect-toggle">
+        <button data-effect="flat" class="active">平面</button>
+        <button data-effect="3d">立体</button>
+      </div>
+    </div>
+
     <div class="divider"><span class="divider-label"><em>§</em>遮罩 · MASK</span></div>
 
     <div class="field">
       <div class="field-label">
-        <span class="lead"><span class="num">vi</span> 浓度</span>
+        <span class="lead"><span class="num">xii</span> 浓度</span>
         <span class="val" id="mask-opacity-val">0.85</span>
       </div>
       <input type="range" id="mask-opacity" min="0" max="1" step="0.01" value="0.85">
@@ -836,40 +1010,31 @@ aside.controls > *:nth-child(11) { animation-delay: 0.58s; }
 
     <div class="field">
       <div class="field-label">
-        <span class="lead"><span class="num">vii</span> 渐变范围</span>
-        <span class="val" id="mask-extent-val">70%</span>
+        <span class="lead"><span class="num">xiii</span> 渐变范围</span>
+        <span class="val" id="mask-extent-val">80%</span>
       </div>
-      <input type="range" id="mask-extent" min="0.3" max="1" step="0.01" value="0.7">
-    </div>
-
-    <div class="divider"><span class="divider-label"><em>§</em>分隔线 · RULE</span></div>
-
-    <div class="field">
-      <div class="field-label">
-        <span class="lead"><span class="num">viii</span> 长度</span>
-        <span class="val" id="rule-length-val">240%</span>
-      </div>
-      <input type="range" id="rule-length" min="0" max="5" step="0.1" value="2.4">
+      <input type="range" id="mask-extent" min="0.3" max="1" step="0.01" value="0.8">
     </div>
 
     <div class="field">
       <div class="field-label">
-        <span class="lead"><span class="num">ix</span> 位置</span>
-        <span class="val" id="rule-position-val">35%</span>
+        <span class="lead"><span class="num">xiv</span> 底部压暗</span>
+        <span class="val" id="mask-bottom-val">35%</span>
       </div>
-      <input type="range" id="rule-position" min="0" max="1" step="0.01" value="0.35">
+      <input type="range" id="mask-bottom" min="0" max="1" step="0.01" value="0.35">
     </div>
 
     <div class="divider"><span class="divider-label"><em>§</em>输出 · OUTPUT</span></div>
 
     <div class="field">
       <div class="field-label">
-        <span class="lead"><span class="num">x</span> 比例</span>
+        <span class="lead"><span class="num">xv</span> 比例</span>
         <span>Aspect ratio</span>
       </div>
       <div class="ratio-toggle">
-        <button data-ratio="4:3">4 : 3</button>
         <button data-ratio="16:9" class="active">16 : 9</button>
+        <button data-ratio="4:3">4 : 3</button>
+        <button data-ratio="3:4">3 : 4</button>
       </div>
     </div>
 
@@ -912,18 +1077,63 @@ const TITLE_FONTS = {
 const state = {
   bgImage: null,
   subtitle: 'AI音色克隆',
+  subtitleStyle: 'bar',  // 'tag' | 'bar' | 'line' | 'plain'
   title: '免费\n在线体验',
   titleColor: '#ffcb05',
   titleFont: 'smiley',
+  titleScale: 1,
+  textEffect: 'flat',   // 'flat' | '3d'
+  vpos: 'middle',       // 'top' | 'middle' | 'bottom'
+  align: 'left',        // 'left' | 'center'
   maskOpacity: 0.85,
-  maskExtent: 0.7,
-  ruleLength: 2.4,
-  rulePosition: 0.35,
+  maskExtent: 0.8,
+  maskBottom: 0.35,
   ratio: '16:9',
   ratios: {
-    '4:3':  [1600, 1200],
     '16:9': [1600, 900],
+    '4:3':  [1600, 1200],
+    '3:4':  [1500, 2000],
   }
+};
+
+// One-click style presets — each is a curated bundle of state values
+const PRESETS = {
+  magazine: {
+    subtitleStyle: 'line',
+    titleFont: 'cezkzdbs',
+    titleColor: '#ffffff',
+    titleScale: 0.95,
+    textEffect: 'flat',
+    vpos: 'bottom',
+    align: 'left',
+    maskOpacity: 0.5,
+    maskExtent: 0.95,
+    maskBottom: 0.6,
+  },
+  impact: {
+    subtitleStyle: 'tag',
+    titleFont: 'ysbth',
+    titleColor: '#ffcb05',
+    titleScale: 1.25,
+    textEffect: 'flat',
+    vpos: 'middle',
+    align: 'left',
+    maskOpacity: 0.8,
+    maskExtent: 0.8,
+    maskBottom: 0.4,
+  },
+  minimal: {
+    subtitleStyle: 'plain',
+    titleFont: 'smiley',
+    titleColor: '#f5f2ea',
+    titleScale: 0.7,
+    textEffect: 'flat',
+    vpos: 'middle',
+    align: 'center',
+    maskOpacity: 0.4,
+    maskExtent: 1,
+    maskBottom: 0.25,
+  },
 };
 
 const canvas = document.getElementById('cover-canvas');
@@ -937,60 +1147,141 @@ function render() {
   }
 
   // ---- Background ----
-  if (state.bgImage) {
+  if (videoEl && videoFramePicker.style.display !== 'none' && videoEl.readyState >= 2) {
+    drawImageCover(ctx, videoEl, 0, 0, w, h);
+  } else if (state.bgImage) {
     drawImageCover(ctx, state.bgImage, 0, 0, w, h);
   } else {
     drawPlaceholder(ctx, w, h);
   }
 
-  // ---- Black gradient mask (left → transparent) ----
+  // ---- Masks: left gradient + bottom gradient ----
   const mask = ctx.createLinearGradient(0, 0, w, 0);
   mask.addColorStop(0, `rgba(0,0,0,${state.maskOpacity})`);
   mask.addColorStop(state.maskExtent, 'rgba(0,0,0,0)');
   ctx.fillStyle = mask;
   ctx.fillRect(0, 0, w, h);
 
-  // ---- Text ----
+  if (state.maskBottom > 0) {
+    const bm = ctx.createLinearGradient(0, h, 0, h * 0.35);
+    bm.addColorStop(0, `rgba(0,0,0,${state.maskBottom})`);
+    bm.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = bm;
+    ctx.fillRect(0, 0, w, h);
+  }
+
+  // ---- Text metrics ----
   const padX = Math.round(w * 0.06);
-  const subtitleSize = Math.round(h * 0.075);
+  const subtitleSize = Math.round(h * 0.045);
   const fontInfo = TITLE_FONTS[state.titleFont];
-  const titleSize = Math.round(h * 0.185 * fontInfo.sizeMul);
-  const titleLineH = titleSize * 1.04;
-  const gap = Math.round(h * 0.045);
-
   const lines = state.title.split('\n').filter(s => s.length > 0);
+
+  // Fit title to the available width — shrink when the longest line overflows
+  let titleSize = Math.round(h * 0.20 * fontInfo.sizeMul * state.titleScale);
+  ctx.font = `${fontInfo.weight} ${titleSize}px ${fontInfo.stack}`;
+  const availW = w - padX * 2;
+  const maxLineW = Math.max(0, ...lines.map(l => ctx.measureText(l).width));
+  if (maxLineW > availW) {
+    titleSize = Math.max(12, Math.floor(titleSize * availW / maxLineW));
+  }
+  const titleLineH = titleSize * 1.05;
+
+  // ---- Subtitle (kicker) metrics ----
+  const hasSub = state.subtitle.trim().length > 0;
+  const subStyle = state.subtitleStyle;
+  const subTrack = Math.round(subtitleSize * 0.18);
+  const chipPadX = Math.round(subtitleSize * 0.55);
+  const chipPadY = Math.round(subtitleSize * 0.32);
+  let subTextW = 0;
+  let subBlockH = 0;
+  if (hasSub) {
+    ctx.font = `500 ${subtitleSize}px "Noto Sans SC", sans-serif`;
+    ctx.letterSpacing = `${subTrack}px`;
+    subTextW = Math.max(0, ctx.measureText(state.subtitle).width - subTrack);
+    ctx.letterSpacing = '0px';
+    subBlockH = subStyle === 'tag' ? subtitleSize + chipPadY * 2 : subtitleSize;
+  }
+
   const totalTitleH = lines.length * titleLineH - (titleLineH - titleSize);
-  const decoLineH = Math.max(2, Math.round(subtitleSize * 0.08));
-  const decoGap = Math.min(Math.round(gap * state.rulePosition), gap - decoLineH - 2);
-  const titleGap = Math.max(2, gap - decoGap - decoLineH);
-  const totalBlock = subtitleSize + decoGap + decoLineH + titleGap + totalTitleH;
-  let startY = Math.round((h - totalBlock) / 2);
+  const titleGap = hasSub ? Math.round(h * 0.055) : 0;
+  const totalBlock = subBlockH + titleGap + totalTitleH;
 
-  // Subtitle — elegant italic serif with subtle glow
-  ctx.textBaseline = 'top';
-  ctx.fillStyle = '#ffffff';
-  ctx.font = `italic ${subtitleSize}px "Instrument Serif", "Noto Serif SC", "Songti SC", serif`;
-  ctx.shadowColor = 'rgba(0,0,0,0.55)';
-  ctx.shadowBlur = Math.round(subtitleSize * 0.28);
-  ctx.shadowOffsetX = 0;
-  ctx.shadowOffsetY = 2;
-  ctx.fillText(state.subtitle, padX, startY);
-  ctx.shadowColor = 'transparent';
-  ctx.shadowBlur = 0;
-  ctx.shadowOffsetY = 0;
+  let startY;
+  if (state.vpos === 'top') startY = Math.round(h * 0.10);
+  else if (state.vpos === 'bottom') startY = Math.round(h * 0.92 - totalBlock);
+  else startY = Math.round((h - totalBlock) / 2);
 
-  // Decorative gold rule between subtitle and title
-  const lineY = startY + subtitleSize + decoGap;
-  const lineWidth = Math.round(subtitleSize * state.ruleLength);
-  ctx.fillStyle = state.titleColor;
-  ctx.globalAlpha = 0.9;
-  ctx.fillRect(padX, lineY, lineWidth, decoLineH);
-  ctx.globalAlpha = 1.0;
+  const center = state.align === 'center';
+  const anchorX = center ? w / 2 : padX;
 
-  // Title - 3D extruded (supersampled for clean edges)
-  const titleY0 = lineY + decoLineH + titleGap;
+  // ---- Subtitle (kicker): tag / bar / line / plain ----
+  if (hasSub) {
+    ctx.textBaseline = 'top';
+    ctx.textAlign = 'left';
+    ctx.font = `500 ${subtitleSize}px "Noto Sans SC", sans-serif`;
+    ctx.letterSpacing = `${subTrack}px`;
+
+    if (subStyle === 'tag') {
+      // solid chip in the title color, dark text
+      const chipW = subTextW + chipPadX * 2;
+      const chipX = center ? anchorX - chipW / 2 : padX;
+      ctx.fillStyle = state.titleColor;
+      ctx.fillRect(chipX, startY, chipW, subBlockH);
+      ctx.fillStyle = '#141414';
+      ctx.fillText(state.subtitle, chipX + chipPadX, startY + chipPadY);
+    } else {
+      let textX = center ? anchorX - subTextW / 2 : padX;
+      if (subStyle === 'bar') {
+        // short vertical accent bar left of the text
+        const barW = Math.max(3, Math.round(subtitleSize * 0.12));
+        const barGap = Math.round(subtitleSize * 0.35);
+        const barX = center ? anchorX - (barW + barGap + subTextW) / 2 : padX;
+        ctx.fillStyle = state.titleColor;
+        ctx.fillRect(barX, startY + Math.round(subtitleSize * 0.1), barW, Math.round(subtitleSize * 0.85));
+        textX = barX + barW + barGap;
+      } else if (subStyle === 'line') {
+        // hairline in the title color, on the same row as the text
+        const hLineH = Math.max(2, Math.round(subtitleSize * 0.06));
+        const hLineY = startY + Math.round((subtitleSize - hLineH) / 2);
+        ctx.fillStyle = state.titleColor;
+        ctx.globalAlpha = 0.9;
+        if (center) {
+          const flankW = Math.round(subtitleSize * 1.4);
+          const flankGap = Math.round(subtitleSize * 0.45);
+          ctx.fillRect(anchorX - subTextW / 2 - flankGap - flankW, hLineY, flankW, hLineH);
+          ctx.fillRect(anchorX + subTextW / 2 + flankGap, hLineY, flankW, hLineH);
+        } else {
+          const lx = padX + subTextW + Math.round(subtitleSize * 0.5);
+          const lw = w - padX - lx;
+          if (lw > 0) ctx.fillRect(lx, hLineY, lw, hLineH);
+        }
+        ctx.globalAlpha = 1.0;
+      }
+      ctx.fillStyle = 'rgba(255,255,255,0.88)';
+      ctx.shadowColor = 'rgba(0,0,0,0.5)';
+      ctx.shadowBlur = Math.round(subtitleSize * 0.45);
+      ctx.shadowOffsetX = 0;
+      ctx.shadowOffsetY = 2;
+      ctx.fillText(state.subtitle, textX, startY);
+      ctx.shadowColor = 'transparent';
+      ctx.shadowBlur = 0;
+      ctx.shadowOffsetY = 0;
+    }
+    ctx.letterSpacing = '0px';
+  }
+
+  // ---- Title ----
+  const titleY0 = startY + subBlockH + titleGap;
+  ctx.font = `${fontInfo.weight} ${titleSize}px ${fontInfo.stack}`;
   lines.forEach((line, i) => {
-    draw3DText(ctx, line, padX, titleY0 + i * titleLineH, titleSize, state.titleColor, fontInfo);
+    const lineW = ctx.measureText(line).width;
+    const lx = center ? anchorX - lineW / 2 : padX;
+    const ly = titleY0 + i * titleLineH;
+    if (state.textEffect === '3d') {
+      draw3DText(ctx, line, lx, ly, titleSize, state.titleColor, fontInfo);
+    } else {
+      drawFlatText(ctx, line, lx, ly, titleSize, state.titleColor, fontInfo);
+    }
   });
 }
 
@@ -1044,6 +1335,24 @@ function drawImageCover(ctx, img, x, y, w, h) {
     sy = (img.height - sh) / 2;
   }
   ctx.drawImage(img, sx, sy, sw, sh, x, y, w, h);
+}
+
+// Flat title: subtle vertical gradient + soft lift-off shadow. Clean default.
+function drawFlatText(ctx, text, x, y, size, hex, fontInfo) {
+  ctx.font = `${fontInfo.weight} ${size}px ${fontInfo.stack}`;
+  ctx.shadowColor = 'rgba(0,0,0,0.45)';
+  ctx.shadowBlur = Math.round(size * 0.09);
+  ctx.shadowOffsetX = 0;
+  ctx.shadowOffsetY = Math.round(size * 0.02);
+  const grad = ctx.createLinearGradient(x, y, x, y + size);
+  grad.addColorStop(0, lighten(hex, 8));
+  grad.addColorStop(0.55, hex);
+  grad.addColorStop(1, darken(hex, 6));
+  ctx.fillStyle = grad;
+  ctx.fillText(text, x, y);
+  ctx.shadowColor = 'transparent';
+  ctx.shadowBlur = 0;
+  ctx.shadowOffsetY = 0;
 }
 
 function draw3DText(ctx, text, x, y, size, hex, fontInfo) {
@@ -1142,16 +1451,21 @@ const maskOpacityInput = document.getElementById('mask-opacity');
 const maskOpacityVal = document.getElementById('mask-opacity-val');
 const maskExtentInput = document.getElementById('mask-extent');
 const maskExtentVal = document.getElementById('mask-extent-val');
-const ruleLengthInput = document.getElementById('rule-length');
-const ruleLengthVal = document.getElementById('rule-length-val');
-const rulePositionInput = document.getElementById('rule-position');
-const rulePositionVal = document.getElementById('rule-position-val');
-const ratioButtons = document.querySelectorAll('.ratio-toggle button');
+const ratioButtons = document.querySelectorAll('[data-ratio]');
 const downloadBtn = document.getElementById('download-btn');
 const dimensionsEl = document.getElementById('dimensions');
+const videoFramePicker = document.getElementById('video-frame-picker');
+const videoPreview = document.getElementById('video-preview');
+const videoSeek = document.getElementById('video-seek');
+const useFrameBtn = document.getElementById('use-frame-btn');
+
+let videoEl = null;
+let videoObjUrl = null;
 
 function loadImageFile(file) {
   if (!file || !file.type.startsWith('image/')) return;
+  // Clean up video if switching from video to image
+  cleanupVideo();
   const reader = new FileReader();
   reader.onload = ev => {
     const img = new Image();
@@ -1167,7 +1481,94 @@ function loadImageFile(file) {
   reader.readAsDataURL(file);
 }
 
-bgInput.addEventListener('change', e => loadImageFile(e.target.files[0]));
+function cleanupVideo() {
+  if (videoEl) {
+    videoEl.pause();
+    videoEl.src = '';
+    videoEl = null;
+  }
+  if (videoObjUrl) {
+    URL.revokeObjectURL(videoObjUrl);
+    videoObjUrl = null;
+  }
+  videoFramePicker.style.display = 'none';
+}
+
+function loadVideoFile(file) {
+  if (!file || !file.type.startsWith('video/')) return;
+  cleanupVideo();
+  videoObjUrl = URL.createObjectURL(file);
+  videoEl = document.createElement('video');
+  videoEl.src = videoObjUrl;
+  videoEl.muted = true;
+  videoEl.playsInline = true;
+  videoEl.preload = 'auto';
+
+  videoEl.addEventListener('loadedmetadata', () => {
+    videoSeek.max = videoEl.duration;
+    videoSeek.value = 0;
+    videoFramePicker.style.display = 'flex';
+    videoEl.currentTime = 0;
+  });
+
+  videoEl.addEventListener('seeked', () => {
+    drawVideoPreview();
+    render();
+  });
+
+  thumb.style.backgroundImage = '';
+  fileDrop.classList.remove('has-image');
+  fileText.textContent = '已选择视频 · 拖动滑块选帧';
+}
+
+function drawVideoPreview() {
+  if (!videoEl || videoEl.readyState < 2) return;
+  const vpc = videoPreview.getContext('2d');
+  const vw = videoEl.videoWidth;
+  const vh = videoEl.videoHeight;
+  const pw = videoPreview.width;
+  const ph = videoPreview.height;
+  const scale = Math.min(pw / vw, ph / vh);
+  const sw = vw * scale;
+  const sh = vh * scale;
+  const sx = (pw - sw) / 2;
+  const sy = (ph - sh) / 2;
+  vpc.clearRect(0, 0, pw, ph);
+  vpc.fillStyle = '#000';
+  vpc.fillRect(0, 0, pw, ph);
+  vpc.drawImage(videoEl, sx, sy, sw, sh);
+}
+
+function useVideoFrame() {
+  if (!videoEl || videoEl.readyState < 2) return;
+  const captureCanvas = document.createElement('canvas');
+  captureCanvas.width = videoEl.videoWidth;
+  captureCanvas.height = videoEl.videoHeight;
+  const cc = captureCanvas.getContext('2d');
+  cc.drawImage(videoEl, 0, 0);
+  const dataUrl = captureCanvas.toDataURL('image/png');
+  const img = new Image();
+  img.onload = () => {
+    state.bgImage = img;
+    thumb.style.backgroundImage = `url(${dataUrl})`;
+    fileDrop.classList.add('has-image');
+    fileText.textContent = '已选择 · 点击更换';
+    cleanupVideo();
+    render();
+  };
+  img.src = dataUrl;
+}
+
+function loadBackgroundFile(file) {
+  if (!file) return;
+  if (file.type.startsWith('image/')) {
+    loadImageFile(file);
+  } else if (file.type.startsWith('video/')) {
+    loadVideoFile(file);
+  }
+}
+
+bgInput.addEventListener('change', e => loadBackgroundFile(e.target.files[0]));
 
 subtitleInput.addEventListener('input', e => { state.subtitle = e.target.value; render(); });
 titleInput.addEventListener('input', e => { state.title = e.target.value; render(); });
@@ -1209,18 +1610,6 @@ maskExtentInput.addEventListener('input', e => {
   render();
 });
 
-ruleLengthInput.addEventListener('input', e => {
-  state.ruleLength = parseFloat(e.target.value);
-  ruleLengthVal.textContent = Math.round(parseFloat(e.target.value) * 100) + '%';
-  render();
-});
-
-rulePositionInput.addEventListener('input', e => {
-  state.rulePosition = parseFloat(e.target.value);
-  rulePositionVal.textContent = Math.round(parseFloat(e.target.value) * 100) + '%';
-  render();
-});
-
 ratioButtons.forEach(btn => {
   btn.addEventListener('click', () => {
     ratioButtons.forEach(b => b.classList.remove('active'));
@@ -1249,6 +1638,126 @@ function showFlash(text) {
   setTimeout(() => el.remove(), 1600);
 }
 
+// ============ Presets & layout controls ============
+const presetChips = document.querySelectorAll('.preset-chip');
+const titleScaleInput = document.getElementById('title-scale');
+const titleScaleVal = document.getElementById('title-scale-val');
+const maskBottomInput = document.getElementById('mask-bottom');
+const maskBottomVal = document.getElementById('mask-bottom-val');
+
+function clearPresetActive() {
+  presetChips.forEach(c => c.classList.remove('active'));
+}
+
+function applyPreset(name) {
+  const p = PRESETS[name];
+  if (!p) return;
+  Object.assign(state, p);
+  presetChips.forEach(c => c.classList.toggle('active', c.dataset.preset === name));
+  syncControls();
+  render();
+}
+
+// Push every state value back onto its control (used after applying a preset)
+function syncControls() {
+  titleColorInput.value = state.titleColor;
+  titleColorVal.textContent = state.titleColor.toUpperCase();
+  document.querySelectorAll('.font-chip').forEach(c => c.classList.toggle('active', c.dataset.font === state.titleFont));
+  titleScaleInput.value = state.titleScale;
+  titleScaleVal.textContent = Math.round(state.titleScale * 100) + '%';
+  maskOpacityInput.value = state.maskOpacity;
+  maskOpacityVal.textContent = state.maskOpacity.toFixed(2);
+  maskExtentInput.value = state.maskExtent;
+  maskExtentVal.textContent = Math.round(state.maskExtent * 100) + '%';
+  maskBottomInput.value = state.maskBottom;
+  maskBottomVal.textContent = Math.round(state.maskBottom * 100) + '%';
+  document.querySelectorAll('[data-substyle]').forEach(b => b.classList.toggle('active', b.dataset.substyle === state.subtitleStyle));
+  document.querySelectorAll('[data-vpos]').forEach(b => b.classList.toggle('active', b.dataset.vpos === state.vpos));
+  document.querySelectorAll('[data-align]').forEach(b => b.classList.toggle('active', b.dataset.align === state.align));
+  document.querySelectorAll('[data-effect]').forEach(b => b.classList.toggle('active', b.dataset.effect === state.textEffect));
+}
+
+presetChips.forEach(chip => {
+  chip.addEventListener('click', () => applyPreset(chip.dataset.preset));
+});
+
+// Any manual tweak deselects the active preset highlight
+const controlsEl = document.querySelector('aside.controls');
+controlsEl.addEventListener('input', e => {
+  if (!e.target.closest('.preset-grid')) clearPresetActive();
+});
+controlsEl.addEventListener('click', e => {
+  if (e.target.closest('.preset-grid')) return;
+  if (e.target.closest('button, .toggle, .color-preset')) clearPresetActive();
+});
+
+titleScaleInput.addEventListener('input', e => {
+  state.titleScale = parseFloat(e.target.value);
+  titleScaleVal.textContent = Math.round(state.titleScale * 100) + '%';
+  render();
+});
+
+maskBottomInput.addEventListener('input', e => {
+  state.maskBottom = parseFloat(e.target.value);
+  maskBottomVal.textContent = Math.round(state.maskBottom * 100) + '%';
+  render();
+});
+
+document.querySelectorAll('[data-substyle]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('[data-substyle]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    state.subtitleStyle = btn.dataset.substyle;
+    render();
+  });
+});
+
+document.querySelectorAll('[data-vpos]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('[data-vpos]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    state.vpos = btn.dataset.vpos;
+    render();
+  });
+});
+
+document.querySelectorAll('[data-align]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('[data-align]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    state.align = btn.dataset.align;
+    render();
+  });
+});
+
+document.querySelectorAll('[data-effect]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('[data-effect]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    state.textEffect = btn.dataset.effect;
+    render();
+  });
+});
+
+// ============ Deep-link / screenshot harness ============
+// #preset=impact&bg=some.jpg&shot=1 — also used by headless screenshot checks
+(function () {
+  const q = new URLSearchParams(location.hash.slice(1));
+  if (q.get('preset')) applyPreset(q.get('preset'));
+  if (q.get('ratio') && state.ratios[q.get('ratio')]) {
+    state.ratio = q.get('ratio');
+    const [w, h] = state.ratios[state.ratio];
+    dimensionsEl.innerHTML = `${w} × ${h}<sup>PX</sup>`;
+  }
+  if (q.get('effect')) state.textEffect = q.get('effect');
+  if (q.get('bg')) {
+    const img = new Image();
+    img.onload = () => { state.bgImage = img; render(); };
+    img.src = q.get('bg');
+  }
+  if (q.get('shot')) document.body.classList.add('shot-mode');
+})();
+
 // drag & drop
 ['dragover', 'dragenter'].forEach(ev => {
   fileDrop.addEventListener(ev, e => {
@@ -1266,19 +1775,36 @@ fileDrop.addEventListener('drop', e => {
   e.preventDefault();
   fileDrop.classList.remove('drag-over');
   const file = e.dataTransfer.files[0];
-  loadImageFile(file);
+  loadBackgroundFile(file);
 });
 
-// global paste (paste an image from clipboard)
+// global paste (paste an image or video from clipboard)
 window.addEventListener('paste', e => {
   const items = (e.clipboardData || {}).items || [];
   for (const it of items) {
     if (it.type.startsWith('image/')) {
-      loadImageFile(it.getAsFile());
+      loadBackgroundFile(it.getAsFile());
       showFlash('已粘贴图片');
       break;
     }
+    if (it.type.startsWith('video/')) {
+      loadBackgroundFile(it.getAsFile());
+      showFlash('已粘贴视频');
+      break;
+    }
   }
+});
+
+// Video frame picker events
+videoSeek.addEventListener('input', e => {
+  if (videoEl) {
+    videoEl.currentTime = parseFloat(e.target.value);
+  }
+});
+useFrameBtn.addEventListener('click', useVideoFrame);
+document.getElementById('close-video-picker').addEventListener('click', () => {
+  cleanupVideo();
+  render();
 });
 
 // Wait for fonts to load before first render
